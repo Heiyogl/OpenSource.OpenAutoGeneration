@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  @Time ${.now} -->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${source_package_domain}.domain.mapper.${className?cap_first}Mapper">
+	<!-- 单条新增 -->
+	<insert id="insert${className?cap_first}" keyProperty="${tableKey}" keyColumn="${tableKey}" parameterType="${source_package_entity}.${className?cap_first}">
+		insert into ${tableName} (<#list tableInfoList as item><#if item.extra == 'auto_increment'><#else>${item.column_name}<#if item_has_next>,</#if></#if></#list>)
+	    values(<#list tableInfoList as item><#if item.extra == 'auto_increment'><#else><#noparse>#</#noparse>{${item.column_name}}<#if item_has_next>,</#if></#if></#list>)
+	</insert>
+	
+	<!-- 批量新增 -->
+	<insert id="insert${className?cap_first}Batch" useGeneratedKeys="true" parameterType="java.util.List">
+    	insert into ${tableName} (<#list tableInfoList as item><#if item.extra == 'auto_increment'><#else>${item.column_name}<#if item_has_next>,</#if></#if></#list>)
+    	 values 
+    	<foreach collection="list" item="item" index="index" separator="," >  
+	        (<#list tableInfoList as item><#if item.extra == 'auto_increment'><#else><#noparse>#</#noparse>{item.${item.column_name}}<#if item_has_next>,</#if></#if></#list>)  
+	    </foreach>
+    </insert>
+	
+	<!-- 修改多个字段 -->
+	<update id="update${className?cap_first}" parameterType="${source_package_entity}.${className?cap_first}">
+		update ${tableName} set 
+		<#list tableInfoList as item>
+			<#if item.extra == 'auto_increment' || item.column_name == 'id' || item.column_name == 'c_userId' || item.column_name == 'c_orgId' || item.column_name == 'c_time' || item.column_name == 'c_status'><#else>
+			${item.column_name} = <#noparse>#</#noparse>{${item.column_name}}<#if item_has_next>,</#if>
+			</#if>
+		</#list>
+		where ${tableKey} = <#noparse>#</#noparse>{id} and create_by_orgId = <#noparse>#</#noparse>{create_by_orgId}
+	</update>
+	
+	
+	<!-- 通过主键查询单条记录 -->
+	<select id="find${className?cap_first}By${tableKey}" resultType="${source_package_entity}.${className?cap_first}" parameterType="${tableKeyType}">
+		select * from ${tableName} where ${tableKey} = <#noparse>#</#noparse>{tableKey}
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="query${className?cap_first}s" resultType="${source_package_entity}.${className?cap_first}" parameterType="map">
+        select * from ${tableName} where 1 = 1
+        <#list tableInfoList as item>
+        	<#if item.extra == 'auto_increment'>
+        	<#else>
+        <if test="${item.column_name}!=null and ${item.column_name}!=''">
+        	and ${item.column_name}=<#noparse>#</#noparse>{${item.column_name}}
+       	</if>
+        	</#if>
+        </#list>
+        <!-- 自定义sql -->
+       	<if test="customSQL!=null and customSQL!=''">
+        	and <#noparse>$</#noparse>{customSQL}
+       	</if>
+       	<choose>
+	       	<when  test="customOrderBy!=null and customOrderBy!=''"><!-- update_time desc	, create_time asc -->
+	        	order by <#noparse>$</#noparse>{customOrderBy}
+	       	</when>
+	       	<otherwise>
+	       		order by update_time desc
+	       	</otherwise>
+       	</choose>
+
+
+		<!-- Example:
+			and column=<#noparse>#</#noparse>{column}
+			and column in (<#noparse>$</#noparse>{columns})
+			and column like '%<#noparse>$</#noparse>{column}%'
+		-->
+    </select>
+    
+</mapper>
