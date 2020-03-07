@@ -1,4 +1,4 @@
-﻿# OpenSource.OpenAutoGeneration
+﻿# OpenSource.OpenAutoGeneration 自定义模板代码生成工具
 
 #### 介绍
 程序主要实现了通过指定mysql数据库表，结合freemarker模板引擎生成对应的代码逻辑，并内置实例模板
