@@ -21,8 +21,8 @@
 ## 2、系统内置变量  
 	系统内置的变量，在模板编写的时候也可以使用；具体的内置变量如下： 
 	tableName：（String）数据库表名；  
-	className：（String）类名；规则：将表名转换为类名， 比如 t_operate_log 转换后为 operateLog ，类名首字母应为大写，这里在freemarker的模板里直接转换；  
-	pageName：（String）页面名；规则：将表名转换为页面名 比如 t_operate_log 转换后为 operate_log；  
+	className：（String）类名；规则：将表名转换为类名， 比如 t_log 转换后为 Log ，类名首字母应为大写，这里在freemarker的模板里直接转换；  
+	pageName：（String）页面名；规则：将表名转换为页面名 比如 t_log 转换后为 log；  
 	tableInfoList：（List<TableInfo>）指定数据库表 的信息；字段:column_name,data_type,column_type,column_comment,extra,column_key；  
 	tableKey：（String）表的主键字段名；  
 	tableKeyType：（String）主键字段类型。 
